@@ -11,7 +11,7 @@ class User(Base):
     id = sc.Column(sc.Integer, primary_key=True)
     email = sc.Column(sc.String)
     username = sc.Column(sc.String)
-    active_notebook_id = sc.Column(sc.Integer, sc.ForeignKey('notebooks.id'))
+    active_notebook_id = sc.Column(sc.Integer)
 
     def __init__(self, **data):
         self.__dict__.update(data)
@@ -21,4 +21,3 @@ class User(Base):
 
     def __repr__(self):
         json.dumps(self.dict())
-

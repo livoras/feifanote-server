@@ -10,4 +10,4 @@ session = sessionmaker(bind=engine)()
 Base = declarative_base(engine)
 
 def init_db():
-  Base.metadata.create_all()
+    Base.metadata.create_all()
