@@ -1,2 +1,4 @@
 # -*- coding: utf-8 -*-
-debug = True
+DEBUG = True
+DATABASE_URI = "sqlite:///"
+ECHO = False
