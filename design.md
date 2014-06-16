@@ -1,20 +1,23 @@
 ## Database design
-user:
-    email
-    username
-    password
-    active_notebook_id
+* user:
+    - id
+    - email
+    - username
+    - password
+    - active_notebook_id
 
-notebook:
-    name
-    user_id
-    active_page_id
+* notebook:
+    - id
+    - name
+    - index
+    - user_id
+    - active_page_id
 
-pages:    
-    index
-    content
-    notebook_id
-
+* pages:    
+    - id
+    - index
+    - content
+    - notebook_id
 
 ## APIs design
 
@@ -50,7 +53,21 @@ pages:
                 - 401 {message: "You have to login first."}
 * notebook
     - create a notebook
+        + POST /notebooks
+        + {name, index}
+        + results:
+            * not login: ..
+            * name should be not empty and its length should less than 30:
+                - 400 {message: "Name is not valid."}
+            * name has existed:
+                - 409 {message: "Name has already existed."}
     - delete a notebook
+        + DELETE /notebooks/<notebook_id>
+        + none
+        + results:
+            * not login: ..
+            * notebook is not found: 
+                - 404 {message: "Notebook is not found."}
     - modify a notebook's name
     - modify a notebook's position
     - retrieve all notebooks' information
