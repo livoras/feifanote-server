@@ -1,0 +1,174 @@
+## Database design
+* user:
+    - id
+    - email
+    - username
+    - password
+    - active_notebook_id
+
+* notebook:
+    - id
+    - name
+    - index
+    - user_id
+    - active_page_id
+
+* pages:    
+    - id
+    - index
+    - content
+    - notebook_id
+
+## APIs design
+
+* user
+    - signup
+        + POST /users
+        + {email, username, password}
+        + results:
+            * ok: 
+                - 201 {email, username, password}
+            * email conflicts: 
+                - 409 {message: "Email has already existed."}
+            * username conflicts: 
+                - 409 {message: "Username has already existed."} 
+            * request data is not acceptable: 
+                - 400 {message: "Email/Username/Passowrd is not correct."}
+    - login
+        + POST /users/me
+        + {email, password}
+        + results:
+            * ok:
+                - 200 {email, username}
+            * email is not correct
+                - 404 {message: "User is not found."}
+            * password is not correct
+                - 401 {message: "Password is not correct."}
+    - logout
+        + DELETE /users/me
+        + results:
+            * not login:
+                - 401 {message: "You have to login first."}
+            * ok:
+                - 200 {message: "OK."}
+* notebook
+    - create a notebook
+        + POST /notebooks
+        + {name, index}
+        + results:
+            * not login: ..
+            * name should be not empty and its length should less than 30:
+                - 400 {message: "Name is not valid."}
+            * name has existed:
+                - 409 {message: "Name has already existed."}
+            * ok:
+                - 201 {name, id, index}
+    - delete a notebook
+        + DELETE /notebooks/<notebook_id>
+        + none
+        + results:
+            * not login: ..
+            * notebook is not found(including the case that the notebook does not belong to you.): 
+                - 404 {message: "Notebook is not found."}
+    - modify a notebook's name
+        + PATCH /notebooks/<notebook_id>?field=name
+        + {name}
+        + results:
+            * not login: ..
+            * notebook is not found: ..
+            * ok:
+                - 200 {message: "OK."}
+            * name is not valid(0 < name.length <= 30):
+                - 400 {message: "Name is not valid."}
+            * name conflicts:
+                - 409 {message: "Name has already existed."}
+    - modify a notebook's position
+        + PATCH /notebooks/<notebook_id>?field=index
+        + {index}
+        + results:
+            * not login: ..
+            * notebook is not found: ..
+            * ok:
+                - 200 {message: "OK."}
+    - retrieve all notebooks' information
+        + GET /notebooks
+        + none
+        + results:
+            * not login: ..
+            * ok:
+                - 200 {notebooks: [{}, {}, ..]}
+    - retrieve a specific notebook's information
+        + GET /notebooks/<notebook_id>
+        + none
+        + results:
+            * not login: ..
+            * notebooks is not found: ..
+            * ok:
+                - 200 {notebook: {name, id, index, pages}}
+    - change active notebook
+        + PUT /notebooks/active_notebook
+        + {notebook_id}
+        + results:
+            * not login: ..
+            * notebook is not found: ..
+            * ok:
+                - 200 {message: "OK."}
+* page
+    - create a page
+        + POST /pages
+        + {notebook_id, index}
+        + results:
+            * not login: ..
+            * notebook is not found: ..
+            * ok:
+                - 201 {id, index, content}
+    - delete a page
+        + DELETE /pages
+        + {page_id}
+        + results:
+            * not login: ..
+            * Page is not found(including the case that the page doesn't belong to you.):
+                - 404 {message: "Page is not found."}
+            * ok: 
+                - 200 {message: "OK."}
+    - save content of a page
+        + PATCH /pages/<page_id>?field=content
+        + {content}
+        + results:
+            * not login: ..
+            * page is not found: ..
+            * ok:
+                - 200 {message: "OK."}
+    - modify a page's position
+        + PATCH /pages/<page_id>?field=index
+        + {index}
+        + results:
+            * not login: ..
+            * page is not found: ..
+            * ok:
+                - 200 {message: "OK."}
+    - modify a page's belonging notebook
+        + PATCH /pages/<page_id>?field=notebook_id
+        + {notebookd_id}
+        + results:
+            * not login: ..
+            * page is not found: ..
+            * ok:
+                - 200 {message: "OK."}
+    - retrieve a specific page's information
+        + GET /pages/<page_id>
+        + none
+        + results:
+            * not login:
+            * page is not found: ..
+            * ok:
+                - 200 {content, index, id, notebook_id}
+    - change active page
+        + PUT /pages/active_page
+        + {notebookd_id, page_id}
+        + results:
+            * not login:
+            * notebook is not found: ..
+            * page is not found: ..
+            * ok:
+                - 200 {message: "OK."}
