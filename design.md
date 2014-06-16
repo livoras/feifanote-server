@@ -69,9 +69,30 @@
             * notebook is not found: 
                 - 404 {message: "Notebook is not found."}
     - modify a notebook's name
+        + PATCH /notebooks/<notebook_id>?field=name
+        + {name}
+        + results:
+            * not login: ..
+            * notebook is not found: 
+                - 404 {message: "Notebook is not found."}
+            * ok:
+                - 200 {message: "OK."}
+            * name is not valid(0 < name.length <= 30):
+                - 400 {message: "Name is not valid."}
+            * name conflicts:
+                - 409 {message: "Name has already existed."}
     - modify a notebook's position
+        + PATCH /notebooks/<notebook_id>?field=index
+        + {index}
+        + results:
+            * not login: ..
+            * notebook is not found:
+                - 404 {message: "Notebook is not found."}
+            * ok:
+                - 200 {message: "OK."}
     - retrieve all notebooks' information
     - retrieve a specific notebook's information
+    - change active notebook
 * page
     - create a page
     - delete a page
@@ -79,3 +100,4 @@
     - modify a page's position
     - modify a page's belonging notebook
     - retrieve a specific page's information
+    - change active page

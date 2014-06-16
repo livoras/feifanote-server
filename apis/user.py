@@ -7,3 +7,7 @@ api = Blueprint('user', __name__)
 def signup():
     result = dict(name="jerry")
     return jsonify(**result)
+
+@api.route('/user/patch', methods=["PATCH"])
+def patch():
+    return 'ok'
