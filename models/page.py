@@ -23,4 +23,3 @@ class Page(Base):
 
     def __repr__(self):
         json.dumps(self.dict())
-
