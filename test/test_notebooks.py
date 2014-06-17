@@ -50,3 +50,41 @@ def test_create_a_notebook():
         rv = http(c, "post", "/notebooks", dict(index=1))
         assert rv.status_code == 400
         assert "Name is not valid." in rv.data
+
+def test_delete_a_notebook():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = 2
+        to_delete_notebook = session.query(Notebook).filter_by(user_id=2, index=25).first()
+        previous_cout = len(session.query(Notebook) \
+            .filter(
+                Notebook.user_id==2,
+                Notebook.index>=to_delete_notebook.index) \
+            .all())
+        rv = http(c, "delete", "/notebooks/%s" % to_delete_notebook.id)
+        assert rv.status_code == 200
+        assert "OK." in rv.data
+        current_count = len(session.query(Notebook) \
+            .filter(
+                Notebook.user_id==2,
+                Notebook.index>to_delete_notebook.index) \
+            .all())
+        assert current_count == previous_cout - 2
+
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = 2
+        to_delete_notebook = session.query(Notebook).filter_by(user_id=1).first()
+        rv = http(c, "delete", "/notebooks/%s" % to_delete_notebook.id)
+        assert rv.status_code == 404
+        assert "Notebook is not found." in rv.data
+
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = 2
+        rv = http(c, "delete", "/notebooks/3000000")
+        assert rv.status_code == 404
+        assert "Notebook is not found." in rv.data

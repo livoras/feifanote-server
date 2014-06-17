@@ -4,7 +4,7 @@ import re
 from flask import Blueprint, jsonify, request, session
 from common.utils import message, encrypt
 from businesses import notebook
-from ._helpers import require_login
+from ._helpers import require_login, notebook_ownership_check
 
 api = Blueprint("notebook", __name__)
 
@@ -29,3 +29,12 @@ def check_notebook_data_valid(data):
     if not isinstance(index, int):
         return False, "Index is not valid."
     return True,
+
+@api.route("/notebooks/<notebook_id>", methods=["DELETE", "PATCH"])
+@require_login
+@notebook_ownership_check
+def notebooks_action(notebook_id):
+    if request.method == "DELETE":
+        user_id = session["id"]
+        notebook.delete_notebook_by_id(notebook_id)
+        return message("OK.", 200)

@@ -20,7 +20,7 @@ class Notebook(Base):
         self.__dict__.update(data)
 
     def dict(self):
-        attrs = ("name", "index", "active_page_id")
+        attrs = ("name", "index", "active_page_id", "user_id")
         return {attr: getattr(self, attr) for attr in attrs}
 
     def __repr__(self):
