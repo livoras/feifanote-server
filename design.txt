@@ -27,7 +27,7 @@
         + {email, username, password}
         + results:
             * ok: 
-                - 201 {email, username, password}
+                - 201 {email, username, password, id}
             * email conflicts: 
                 - 409 {message: "Email has already existed."}
             * username conflicts: 
