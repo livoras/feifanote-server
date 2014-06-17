@@ -4,7 +4,7 @@ import re
 from flask import Blueprint, jsonify, request, session
 from common.utils import message, encrypt
 from businesses import notebook
-from ._helpers import require_login, notebook_ownership_check
+from ._helpers import require_login, notebook_ownership_check, current_user_has_notebook
 
 api = Blueprint("notebook", __name__)
 
@@ -68,3 +68,14 @@ def modify_notebook_name(notebook_id, name):
         return message("Name has already existed.", 409)
     notebook.modify_notebook_name(notebook_id, name)
     return message("OK.", 200)
+
+@api.route("/notebooks/active_notebook", methods=["PUT"])
+@require_login
+def change_active_notebook():
+    data = request.json
+    notebook_id = data.get("notebook_id")
+    if current_user_has_notebook(notebook_id):
+        notebook.change_active_notebook(session.get("id"), notebook_id)
+        return message("OK.", 200)
+    else:
+        return message("Notebook is not found.", 404)

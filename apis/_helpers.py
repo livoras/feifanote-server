@@ -23,8 +23,14 @@ def notebook_ownership_check(route_fn):
         not_found = message("Notebook is not found.", 404)
         if not session.get("is_login"):
             return not_found 
-        notebook = db.session.query(Notebook).filter_by(id=notebook_id).first()
-        if not notebook or notebook.user_id != session.get("id"):
+        if not current_user_has_notebook(notebook_id):
             return not_found
         return route_fn(notebook_id)    
     return _route_fn    
+
+def current_user_has_notebook(notebook_id):
+    user_id = session.get("id")
+    notebook = db.session.query(Notebook) \
+                         .filter_by(id=notebook_id, user_id=user_id) \
+                         .first()
+    return notebook

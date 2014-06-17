@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from models.notebook import Notebook
+from models.user import User
 from common.db import session
 from sys import maxint
 
@@ -59,3 +60,8 @@ def modify_notebook_position(notebook_id, index):
 
 def get_all_notebooks_by_user_id(user_id):
     return session.query(Notebook).filter_by(user_id=user_id).all()
+
+def change_active_notebook(user_id, notebook_id):
+    user = session.query(User).filter_by(id=user_id).first()
+    user.active_notebook_id = notebook_id
+    session.commit()

@@ -13,7 +13,7 @@ class User(Base):
     email = sc.Column(sc.String)
     username = sc.Column(sc.String)
     password = sc.Column(sc.String)
-    active_notebook_id = sc.Column(sc.Integer)
+    active_notebook_id = sc.Column(sc.Integer, default=-1)
 
     def __init__(self, **data):
         data["password"] = utils.encrypt(data["password"])

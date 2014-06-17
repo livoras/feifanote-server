@@ -6,8 +6,10 @@ from common.db import session
 from common import utils
 from flask import session as sess
 from models.notebook import Notebook
+from models.user import User
 
 def setup():
+    session.add(User(**dict(password="123465")))
     for index in xrange(1, 51):
         new_notebook = Notebook(**dict(
             user_id=2,
@@ -186,3 +188,13 @@ def test_retrieve_specific_notebook():
         rv = http(c, "get", "/notebooks/%s" % to_get.id)    
         assert to_get.name in rv.data
         assert rv.status_code == 200
+
+def test_change_active_notebook():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = 2
+        to_set_id = session.query(Notebook).filter_by(user_id=2).first().id
+        rv = http(c, "put", "/notebooks/active_notebook", dict(notebook_id=to_set_id))
+        assert session.query(User).filter_by(id=2).first().active_notebook_id == to_set_id
+        assert "OK." in rv.data
