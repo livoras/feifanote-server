@@ -166,3 +166,13 @@ def test_modify_notebook_position():
         assert notebook_of_target_pos.index == target_index - 1
         assert notebook_of_next_pos.index == to_move_index
         assert notebook_of_to_move.index == target_index
+
+def test_retrieve_all_notebooks():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = 2
+        rv = http(c, "get", "/notebooks")    
+        result = json.loads(rv.data)
+        all_notebooks = session.query(Notebook).filter_by(user_id=2).all()
+        assert len(result["notebooks"]) == len(all_notebooks)

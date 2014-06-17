@@ -11,7 +11,7 @@ class Notebook(Base):
     id = sc.Column(sc.Integer, primary_key=True)
     index = sc.Column(sc.Integer)
     name = sc.Column(sc.String)
-    active_page_id = sc.Column(sc.Integer)
+    active_page_id = sc.Column(sc.Integer, default=-1)
     user_id = sc.Column(sc.Integer, sc.ForeignKey("users.id"))
 
     user = relationship("User", backref=backref("notebooks"))

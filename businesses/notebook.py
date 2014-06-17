@@ -56,3 +56,6 @@ def modify_notebook_position(notebook_id, index):
         shift_notebooks(user_id, to_modify_notebook.index + 1, index + 1, True)
         to_modify_notebook.index = index
     session.commit()    
+
+def get_all_notebooks_by_user_id(user_id):
+    return session.query(Notebook).filter_by(user_id=user_id).all()

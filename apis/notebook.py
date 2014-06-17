@@ -8,19 +8,25 @@ from ._helpers import require_login, notebook_ownership_check
 
 api = Blueprint("notebook", __name__)
 
-@api.route("/notebooks", methods=["POST"])
+@api.route("/notebooks", methods=["POST", "GET"])
 @require_login
 def create_new_notebook():
-    data = request.json
-    validation = check_notebook_data_valid(data)
-    if not validation[0]:
-        return message(validation[1], 400)
-    user_id = session.get("id")
-    if notebook.find_notebook_by_name_with_user_id(data["name"], user_id):
-        return message("Name has already existed.", 409)
-    data["user_id"] = user_id
-    new_notebook = notebook.add_new_notebook(data)    
-    return jsonify(**new_notebook.dict()), 201
+    if request.method == "GET":
+        user_id = session.get("id")
+        all_notebooks = notebook.get_all_notebooks_by_user_id(user_id)
+        all_notebooks = [book.dict() for book in all_notebooks]
+        return jsonify(**dict(notebooks=all_notebooks)), 200
+    elif request.method == "POST":
+        data = request.json
+        validation = check_notebook_data_valid(data)
+        if not validation[0]:
+            return message(validation[1], 400)
+        user_id = session.get("id")
+        if notebook.find_notebook_by_name_with_user_id(data["name"], user_id):
+            return message("Name has already existed.", 409)
+        data["user_id"] = user_id
+        new_notebook = notebook.add_new_notebook(data)    
+        return jsonify(**new_notebook.dict()), 201
 
 def check_notebook_data_valid(data):
     name = data.get("name")
