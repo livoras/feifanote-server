@@ -63,15 +63,14 @@
                 - 409 {message: "Name has already existed."}
             * ok:
                 - 201 {name, id, index}
-    - delete a notebook
-        + DELETE /notebooks/<notebook_id>
+       + DELETE /notebooks/<notebook_id>
         + none
         + results:
             * not login: ..
             * notebook is not found(including the case that the notebook does not belong to you.): 
                 - 404 {message: "Notebook is not found."}
     - modify a notebook's name
-        + PATCH /notebooks/<notebook_id>?field=name
+        + PATCH /notebooks/<notebook_id>
         + {name}
         + results:
             * not login: ..
@@ -83,7 +82,7 @@
             * name conflicts:
                 - 409 {message: "Name has already existed."}
     - modify a notebook's position
-        + PATCH /notebooks/<notebook_id>?field=index
+        + PATCH /notebooks/<notebook_id>
         + {index}
         + results:
             * not login: ..

@@ -44,6 +44,10 @@ def notebooks_action(notebook_id):
         if data.get("name"):
             new_name = data.get("name")
             return modify_notebook_name(notebook_id, new_name)
+        if data.get("index"):    
+            new_index = data.get("index")
+            notebook.modify_notebook_position(notebook_id, new_index)
+            return message("OK.", 200)
         return message("The filed is not allowed."), 400
 
 def modify_notebook_name(notebook_id, name):
