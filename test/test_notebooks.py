@@ -176,3 +176,13 @@ def test_retrieve_all_notebooks():
         result = json.loads(rv.data)
         all_notebooks = session.query(Notebook).filter_by(user_id=2).all()
         assert len(result["notebooks"]) == len(all_notebooks)
+
+def test_retrieve_specific_notebook():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = 2
+        to_get = session.query(Notebook).filter_by(user_id=2).first()
+        rv = http(c, "get", "/notebooks/%s" % to_get.id)    
+        assert to_get.name in rv.data
+        assert rv.status_code == 200

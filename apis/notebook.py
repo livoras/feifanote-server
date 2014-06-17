@@ -37,11 +37,14 @@ def check_notebook_data_valid(data):
         return False, "Index is not valid."
     return True,
 
-@api.route("/notebooks/<notebook_id>", methods=["DELETE", "PATCH"])
+@api.route("/notebooks/<notebook_id>", methods=["GET", "DELETE", "PATCH"])
 @require_login
 @notebook_ownership_check
 def notebooks_action(notebook_id):
-    if request.method == "DELETE":
+    if request.method == "GET":
+        to_get_notebook = notebook.find_notebook_by_id(notebook_id)
+        return jsonify(**to_get_notebook.dict()), 200
+    elif request.method == "DELETE":
         user_id = session["id"]
         notebook.delete_notebook_by_id(notebook_id)
         return message("OK.", 200)
