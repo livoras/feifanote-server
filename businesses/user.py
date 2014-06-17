@@ -13,3 +13,6 @@ def add_new_user(user_data):
     session.add(new_user)
     session.commit()
     return new_user
+
+def get_user_by_email(email):
+    return session.query(User).filter_by(email=email).first()

@@ -39,7 +39,7 @@
         + {email, password}
         + results:
             * ok:
-                - 200 {email, username}
+                - 200 {email, username, id}
             * email is not correct
                 - 404 {message: "User is not found."}
             * password is not correct

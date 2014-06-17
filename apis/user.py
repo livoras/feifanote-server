@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 from flask import Blueprint, jsonify, request, session
-from common.utils import message
+from common.utils import message, encrypt
 from businesses import user
 
 api = Blueprint("user", __name__)
@@ -34,3 +34,16 @@ def check_user_data_validation(user_data):
 
 def is_email_valid(email):
     return re.match("\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", email)
+
+@api.route("/user/me", methods=["POST"])
+def login():
+    data = request.json
+    current_user = user.get_user_by_email(data.get("email"))
+    if not current_user:
+        return message("User is not found.", 404)
+    if not current_user.password == encrypt(data.get("password")):
+        return message("Password is not correct.", 401)
+    session["is_login"] = True
+    for to_set in ("username", "email", "id"):
+        session[to_set] = getattr(current_user, to_set)
+    return jsonify(**current_user.dict()), 200    
