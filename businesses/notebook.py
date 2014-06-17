@@ -2,8 +2,10 @@
 from models.notebook import Notebook
 from common.db import session
 
-def find_notebook_by_name(name):
-    return session.query(Notebook).filter_by(name=name).first()
+def find_notebook_by_name_with_user_id(name, user_id):
+    return session.query(Notebook) \
+                  .filter_by(name=name, user_id=user_id) \
+                  .first()
 
 def add_new_notebook(notebook_data):
     new_notebook = Notebook(**notebook_data)
@@ -37,4 +39,9 @@ def shift_notebooks_back_from(user_id, index):
         Notebook.index>index)
     for notebook in to_shift_notebooks:
         notebook.index -= 1
+    session.commit()
+
+def modify_notebook_name(notebook_id, name):
+    notebook = session.query(Notebook).filter_by(id=notebook_id).first()
+    notebook.name = name
     session.commit()

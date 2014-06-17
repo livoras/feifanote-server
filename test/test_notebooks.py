@@ -88,3 +88,15 @@ def test_delete_a_notebook():
         rv = http(c, "delete", "/notebooks/3000000")
         assert rv.status_code == 404
         assert "Notebook is not found." in rv.data
+
+def test_modify_notebook_name():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = 2
+        to_modify_notebook = session.query(Notebook).filter_by(user_id=2).first()
+        notebook_id = to_modify_notebook.id
+        rv = http(c, "patch", "/notebooks/%s?field=name" % notebook_id, dict(name="new_notebook_name"))
+        assert rv.status_code == 200
+        to_modify_notebook = session.query(Notebook).filter_by(user_id=2).first()
+        assert to_modify_notebook.name == "new_notebook_name"

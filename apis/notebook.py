@@ -15,9 +15,10 @@ def create_new_notebook():
     validation = check_notebook_data_valid(data)
     if not validation[0]:
         return message(validation[1], 400)
-    if notebook.find_notebook_by_name(data["name"]):
+    user_id = session.get("id")
+    if notebook.find_notebook_by_name_with_user_id(data["name"], user_id):
         return message("Name has already existed.", 409)
-    data["user_id"] = session.get("id")   
+    data["user_id"] = user_id
     new_notebook = notebook.add_new_notebook(data)    
     return jsonify(**new_notebook.dict()), 201
 
@@ -38,3 +39,19 @@ def notebooks_action(notebook_id):
         user_id = session["id"]
         notebook.delete_notebook_by_id(notebook_id)
         return message("OK.", 200)
+    elif request.method == "PATCH":
+        data = request.json
+        if data.get("name"):
+            new_name = data.get("name")
+            return modify_notebook_name(notebook_id, new_name)
+        return message("The filed is not allowed."), 400
+
+def modify_notebook_name(notebook_id, name):
+    user_id = session.get("id")
+    if len(name) == 0:
+        return message("Name is not valid.", 400)
+    to_modify_notebook = notebook.find_notebook_by_name_with_user_id(name, user_id)
+    if to_modify_notebook:
+        return message("Name has already existed.", 409)
+    notebook.modify_notebook_name(notebook_id, name)
+    return message("OK.", 200)
