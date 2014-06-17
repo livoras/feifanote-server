@@ -85,3 +85,18 @@ def test_login():
         assert rv.status_code == 401
         assert "Password is not correct." in rv.data
         assert sess.get("is_login") == None
+
+def test_logout():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+        rv = http(c, "delete", "/user/me")
+        assert "OK." in rv.data
+        assert rv.status_code == 200
+        assert not sess.get('is_login')
+
+        with c.session_transaction() as s:
+            s.clear()
+        rv = http(c, "delete", "/user/me")
+        assert "You have to login first." in rv.data
+        assert rv.status_code == 401

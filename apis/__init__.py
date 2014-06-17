@@ -3,4 +3,4 @@ from . import user
 
 apis = (user.api, )
 
-__all__ = ['apis']
+__all__ = ["apis"]

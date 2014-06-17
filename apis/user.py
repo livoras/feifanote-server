@@ -3,6 +3,7 @@ import re
 from flask import Blueprint, jsonify, request, session
 from common.utils import message, encrypt
 from businesses import user
+from ._helpers import require_login
 
 api = Blueprint("user", __name__)
 
@@ -35,7 +36,13 @@ def check_user_data_validation(user_data):
 def is_email_valid(email):
     return re.match("\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", email)
 
-@api.route("/user/me", methods=["POST"])
+@api.route("/user/me", methods=["POST", "DELETE"])
+def user_actions():
+    if request.method == "POST":
+        return login()
+    elif request.method == "DELETE":    
+        return logout()
+
 def login():
     data = request.json
     current_user = user.get_user_by_email(data.get("email"))
@@ -47,3 +54,8 @@ def login():
     for to_set in ("username", "email", "id"):
         session[to_set] = getattr(current_user, to_set)
     return jsonify(**current_user.dict()), 200    
+
+@require_login
+def logout():
+    session.clear()
+    return message("OK.", 200)
