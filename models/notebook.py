@@ -10,6 +10,7 @@ class Notebook(Base):
 
     id = sc.Column(sc.Integer, primary_key=True)
     index = sc.Column(sc.Integer)
+    name = sc.Column(sc.String)
     active_page_id = sc.Column(sc.Integer)
     user_id = sc.Column(sc.Integer, sc.ForeignKey("users.id"))
 
@@ -19,7 +20,8 @@ class Notebook(Base):
         self.__dict__.update(data)
 
     def dict(self):
-        return {}
+        attrs = ("name", "index", "active_page_id")
+        return {attr: getattr(self, attr) for attr in attrs}
 
     def __repr__(self):
-        json.dumps(self.dict())
+        return json.dumps(self.dict())

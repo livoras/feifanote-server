@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from . import user
+from . import user, notebook
 
-apis = (user.api, )
+apis = (user.api, notebook.api)
 
 __all__ = ["apis"]
