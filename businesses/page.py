@@ -19,6 +19,11 @@ def delete_page_by_id(page_id):
     session.delete(to_delete_page)
     session.commit()
 
+def modify_content_by_id(page_id, content):
+    to_modify_page = session.query(Page).filter_by(id=page_id).first()
+    to_modify_page.content = content
+    session.commit()
+
 def shift_notebooks(notebook_id, _from, to, back=False):
     to_shift_pages = session.query(Page).filter(
         Page.notebook_id==notebook_id,

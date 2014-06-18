@@ -87,3 +87,16 @@ def test_delete_page():
         assert rv.status_code == 200
         assert "OK." in rv.data
         assert current_count == previous_count - 1
+
+def test_save_content_of_page():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = user_id
+        to_modify_page = session.query(Page).filter_by(notebook_id=notebook_id).first()
+        page_id = to_modify_page.id
+        rv = http(c, "patch", "/pages/%s" % page_id, dict(content="FUCKYOU"))
+        newer_page = session.query(Page).filter_by(id=page_id).first()
+        assert rv.status_code == 200
+        assert "OK." in rv.data
+        assert "FUCKYOU" == newer_page.content

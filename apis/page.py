@@ -19,10 +19,19 @@ def create_new_page(notebook_id):
     new_page = page.add_new_page(notebook_id, index)
     return jsonify(**new_page.dict()), 201 
 
-@api.route("/pages/<page_id>", methods=["DELETE"])
+@api.route("/pages/<page_id>", methods=["DELETE", "PATCH"])
 @require_login
 @page_ownership_check
 def page_action(page_id):
     if request.method == "DELETE":
         page.delete_page_by_id(page_id)
+        return message("OK.", 200)
+    if request.method == "PATCH":
+        return modify_page(page_id)
+
+def modify_page(page_id):
+    data = request.json
+    if data.get("content"):
+        content = data.get("content")
+        page.modify_content_by_id(page_id, content)
         return message("OK.", 200)
