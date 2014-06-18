@@ -19,10 +19,13 @@ def create_new_page(notebook_id):
     new_page = page.add_new_page(notebook_id, index)
     return jsonify(**new_page.dict()), 201 
 
-@api.route("/pages/<page_id>", methods=["DELETE", "PATCH"])
+@api.route("/pages/<page_id>", methods=["DELETE", "PATCH", "GET"])
 @require_login
 @page_ownership_check
 def page_action(page_id):
+    if request.method == "GET":
+        to_get_page = page.find_page_by_id(page_id)
+        return jsonify(**to_get_page.dict()), 200
     if request.method == "DELETE":
         page.delete_page_by_id(page_id)
         return message("OK.", 200)
@@ -46,4 +49,11 @@ def modify_page(page_id):
 @notebook_ownership_check
 def modify_page_belonging_notebook(page_id, notebook_id):
     page.modify_page_belonging_notebook(page_id, notebook_id)
+    return message("OK.", 200)
+
+@api.route("/pages/active_page", methods=["PUT"])
+@notebook_ownership_check
+@page_ownership_check
+def change_active_page(notebook_id, page_id):
+    page.change_active_page(notebook_id, page_id)
     return message("OK.", 200)

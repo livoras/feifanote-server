@@ -12,15 +12,18 @@ def add_new_page(notebook_id, index):
     return page
 
 def delete_page_by_id(page_id):
-    to_delete_page = session.query(Page).filter_by(id=page_id).first()
+    to_delete_page = find_page_by_id(page_id)
     index = to_delete_page.index
     notebook_id = to_delete_page.notebook_id
     shift_pages(notebook_id, index + 1, maxint, True)
     session.delete(to_delete_page)
     session.commit()
 
+def find_page_by_id(page_id):
+    return session.query(Page).filter_by(id=page_id).first()
+
 def modify_content_by_id(page_id, content):
-    to_modify_page = session.query(Page).filter_by(id=page_id).first()
+    to_modify_page = find_page_by_id(page_id)
     to_modify_page.content = content
     session.commit()
 
@@ -50,4 +53,9 @@ def shift_pages(notebook_id, _from, to, back=False):
             page.index -= 1
         else:    
             page.index += 1
+    session.commit()
+
+def change_active_page(notebook_id, page_id):
+    notebook = session.query(Notebook).filter_by(id=notebook_id).first()
+    notebook.active_page_id = page_id
     session.commit()

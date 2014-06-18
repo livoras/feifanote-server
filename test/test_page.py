@@ -138,3 +138,38 @@ def test_modify_page_belonging_notebook():
         rv = http(c, "patch", "/pages/%s" % page_id, dict(notebook_id=1))
         assert rv.status_code == 404
         assert "Notebook is not found." in rv.data
+
+def test_get_page_info():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = user_id
+        page_id = session.query(Page).filter_by(notebook_id=notebook_id).first().id
+        rv = http(c, "get", "/pages/%s" % page_id)
+        assert "content" in rv.data
+        assert "id" in rv.data
+        assert "notebook_id" in rv.data
+        assert "index" in rv.data
+        assert rv.status_code == 200
+
+def test_change_active_page():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = user_id
+        page_id = session.query(Page).filter_by(notebook_id=notebook_id).first().id
+        rv = http(c, "put", "/pages/active_page", dict(notebook_id=notebook_id, page_id=page_id))
+        notebook = session.query(Notebook).filter_by(id=notebook_id).first()
+        assert rv.status_code == 200
+        assert "OK." in rv.data
+        assert notebook.active_page_id == page_id
+
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = 1
+        page_id = session.query(Page).filter_by(notebook_id=notebook_id).first().id
+        rv = http(c, "put", "/pages/active_page", dict(notebook_id=notebook_id, page_id=page_id))
+        notebook = session.query(Notebook).filter_by(id=notebook_id).first()
+        assert rv.status_code == 404
+        assert "Notebook is not found." in rv.data

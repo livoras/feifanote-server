@@ -42,10 +42,13 @@ def current_user_has_notebook(notebook_id):
 
 def page_ownership_check(route_fn):
     @wraps(route_fn)
-    def _route_fn(page_id):
+    def _route_fn(*argvs, **keywords):
+        data = request.json
+        page_id = data.get("page_id")
+        page_id = page_id or keywords.get("page_id")
         page = db.session.query(Page).filter_by(id=page_id).first()
         if not page or page.notebook.user_id != session.get("id"):
             return message("Page is not found.", 404)
-        else:   
-            return route_fn(page_id)
+        keywords.setdefault("page_id", page_id)
+        return route_fn(*argvs, **keywords)
     return _route_fn
