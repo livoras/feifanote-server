@@ -51,7 +51,7 @@ def login():
     if not current_user.password == encrypt(data.get("password")):
         return message("Password is not correct.", 401)
     session["is_login"] = True
-    for to_set in ("username", "email", "id"):
+    for to_set in ("username", "email", "id", "is_vip"):
         session[to_set] = getattr(current_user, to_set)
     return jsonify(**current_user.dict()), 200    
 

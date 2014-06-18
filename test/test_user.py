@@ -26,6 +26,7 @@ def test_signup():
         assert result["username"] == user_data["username"]
         new_user = session.query(User).filter_by(id=result["id"]).first()
         assert new_user.password == utils.encrypt(user_data["password"])
+        assert new_user.is_vip == False
 
         # Test for email conflicts
         user_data = dict(
@@ -66,7 +67,7 @@ def test_login():
         rv = http(c, "post", "/user/me", dict(email="livoras@163.com", password="123456"))
         assert rv.status_code == 200
         result = json.loads(rv.data)
-        assert_attrs = ("username", "email", "id")
+        assert_attrs = ("username", "email", "id", "is_vip")
         assert sess["is_login"] == True
         for attr in assert_attrs:
             assert attr in sess
