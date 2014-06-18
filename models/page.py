@@ -19,7 +19,8 @@ class Page(Base):
         self.__dict__.update(data)
 
     def dict(self):
-        return {}
+        attrs = ("id", "index", "content", "notebook_id")
+        return {attr: getattr(self, attr) for attr in attrs}
 
     def __repr__(self):
         json.dumps(self.dict())

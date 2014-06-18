@@ -10,9 +10,9 @@ def find_notebook_by_name_with_user_id(name, user_id):
                   .first()
 
 def add_new_notebook(notebook_data):
-    new_notebook = Notebook(**notebook_data)
     user_id, index = notebook_data["user_id"], notebook_data["index"]
     shift_notebooks(user_id, index, maxint)
+    new_notebook = Notebook(**notebook_data)
     session.add(new_notebook)
     session.commit()
     return new_notebook
