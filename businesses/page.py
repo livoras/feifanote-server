@@ -11,6 +11,14 @@ def add_new_page(notebook_id, index):
     session.commit()
     return page
 
+def delete_page_by_id(page_id):
+    to_delete_page = session.query(Page).filter_by(id=page_id).first()
+    index = to_delete_page.index
+    notebook_id = to_delete_page.notebook_id
+    shift_notebooks(notebook_id, index + 1, maxint, True)
+    session.delete(to_delete_page)
+    session.commit()
+
 def shift_notebooks(notebook_id, _from, to, back=False):
     to_shift_pages = session.query(Page).filter(
         Page.notebook_id==notebook_id,

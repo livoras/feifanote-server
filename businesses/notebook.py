@@ -25,7 +25,7 @@ def delete_notebook_by_id(notebook_id):
     index = to_delete_notebook.index
     session.delete(to_delete_notebook)
     session.commit()
-    shift_notebooks(user_id, index, maxint, True)
+    shift_notebooks(user_id, index + 1, maxint, True)
 
 def shift_notebooks(user_id, _from, to, back=False):
     to_shift_notebooks = session.query(Notebook).filter(

@@ -122,8 +122,7 @@
             * ok:
                 - 201 {id, index, content}
     - delete a page
-        + DELETE /pages
-        + {page_id}
+        + DELETE /pages/<page_id>
         + results:
             * not login: ..
             * Page is not found(including the case that the page doesn't belong to you.):
@@ -131,7 +130,7 @@
             * ok: 
                 - 200 {message: "OK."}
     - save content of a page
-        + PATCH /pages/<page_id>?field=content
+        + PATCH /pages/<page_id>
         + {content}
         + results:
             * not login: ..
@@ -139,7 +138,7 @@
             * ok:
                 - 200 {message: "OK."}
     - modify a page's position
-        + PATCH /pages/<page_id>?field=index
+        + PATCH /pages/<page_id>
         + {index}
         + results:
             * not login: ..
@@ -147,7 +146,7 @@
             * ok:
                 - 200 {message: "OK."}
     - modify a page's belonging notebook
-        + PATCH /pages/<page_id>?field=notebook_id
+        + PATCH /pages/<page_id>
         + {notebookd_id}
         + results:
             * not login: ..

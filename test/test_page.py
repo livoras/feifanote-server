@@ -63,3 +63,27 @@ def test_create_page():
         assert "id" in rv.data
         assert "index" in rv.data
         assert current_count == previous_count + 1
+
+def test_delete_page():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = user_id
+        new_page = Page(**dict(notebook_id=1))    
+        session.add(new_page)
+        session.commit()
+        rv = http(c, "delete", "/pages/%s" % new_page.id)
+        assert rv.status_code == 404
+        assert "Page is not found." in rv.data
+
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = user_id
+        to_delete_page = session.query(Page).filter_by(notebook_id=notebook_id).first()    
+        previous_count = len(session.query(Page).filter_by(notebook_id=notebook_id).all())
+        rv = http(c, "delete", "/pages/%s" % to_delete_page.id)
+        current_count = len(session.query(Page).filter_by(notebook_id=notebook_id).all())
+        assert rv.status_code == 200
+        assert "OK." in rv.data
+        assert current_count == previous_count - 1
