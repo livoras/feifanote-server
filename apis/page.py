@@ -35,3 +35,7 @@ def modify_page(page_id):
         content = data.get("content")
         page.modify_content_by_id(page_id, content)
         return message("OK.", 200)
+    if data.get("index"):    
+        index = data.get("index")
+        page.modify_page_position(page_id, index)
+        return message("OK.", 200)
