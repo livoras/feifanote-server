@@ -39,3 +39,11 @@ def modify_page(page_id):
         index = data.get("index")
         page.modify_page_position(page_id, index)
         return message("OK.", 200)
+    if data.get("notebook_id"):    
+        return modify_page_belonging_notebook(page_id)
+    return message("The field is not allowed to modify.", 400)   
+
+@notebook_ownership_check
+def modify_page_belonging_notebook(page_id, notebook_id):
+    page.modify_page_belonging_notebook(page_id, notebook_id)
+    return message("OK.", 200)

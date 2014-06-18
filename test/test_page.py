@@ -113,3 +113,28 @@ def test_modify_page_position():
         assert rv.status_code == 200
         assert newer_page.index == 25
         assert "OK." in rv.data
+
+def test_modify_page_belonging_notebook():
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = user_id
+        new_notebook = Notebook(**dict(user_id=user_id))
+        session.add(new_notebook)
+        session.commit()
+        to_modify_page = session.query(Page).filter_by(notebook_id=notebook_id).first()
+        page_id = to_modify_page.id
+        rv = http(c, "patch", "/pages/%s" % page_id, dict(notebook_id=new_notebook.id))
+        newer_page = session.query(Page).filter_by(id=page_id).first()
+        assert rv.status_code == 200
+        assert newer_page.notebook_id == new_notebook.id
+        assert "OK." in rv.data
+
+    with app.test_client() as c:
+        with c.session_transaction() as s:
+            s["is_login"] = True
+            s["id"] = user_id
+        page_id = to_modify_page.id
+        rv = http(c, "patch", "/pages/%s" % page_id, dict(notebook_id=1))
+        assert rv.status_code == 404
+        assert "Notebook is not found." in rv.data

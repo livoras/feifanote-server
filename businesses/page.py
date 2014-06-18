@@ -35,6 +35,11 @@ def modify_page_position(page_id, index):
         to_modify_page.index = index
     session.commit()    
 
+def modify_page_belonging_notebook(page_id, notebook_id):
+    to_modify_page = session.query(Page).filter_by(id=page_id).first()
+    to_modify_page.notebook_id = notebook_id
+    session.commit()
+
 def shift_pages(notebook_id, _from, to, back=False):
     to_shift_pages = session.query(Page).filter(
         Page.notebook_id==notebook_id,

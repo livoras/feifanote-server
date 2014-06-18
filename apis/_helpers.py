@@ -20,15 +20,17 @@ def require_login(route_fn):
 
 def notebook_ownership_check(route_fn):
     @wraps(route_fn)
-    def _route_fn(notebook_id=None):
+    def _route_fn(*argvs, **keywords):
         data = request.json
-        notebook_id = notebook_id if notebook_id else data.get('notebook_id')
+        notebook_id = data.get("notebook_id")
+        notebook_id = notebook_id or keywords.get("notebook_id")
         not_found = message("Notebook is not found.", 404)
         if not session.get("is_login"):
             return not_found 
         if not current_user_has_notebook(notebook_id):
             return not_found
-        return route_fn(notebook_id)    
+        keywords.setdefault("notebook_id", notebook_id)
+        return route_fn(*argvs, **keywords)
     return _route_fn    
 
 def current_user_has_notebook(notebook_id):
