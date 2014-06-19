@@ -8,7 +8,7 @@ from flask import Flask, request, \
 import config
 from common.db import init_db
 
-app = Flask(__name__, template_folder="static")
+app = Flask(__name__, template_folder="feifanote")
 app.config.from_object(config)
 
 @app.route('/')
@@ -32,7 +32,7 @@ def get_init_data():
 
 @app.errorhandler(404)
 def check_static(error):
-    path = 'static' + request.path
+    path = 'feifanote' + request.path
     data = dict(notification="")
     if os.path.exists(path):
         return send_file(path)
