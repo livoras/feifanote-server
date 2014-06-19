@@ -36,12 +36,19 @@ def check_user_data_validation(user_data):
 def is_email_valid(email):
     return re.match("\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", email)
 
-@api.route("/user/me", methods=["POST", "DELETE"])
+@api.route("/users/me", methods=["POST", "DELETE", "GET"])
 def user_actions():
     if request.method == "POST":
         return login()
     elif request.method == "DELETE":    
         return logout()
+    elif request.method == "GET":    
+        return get_current_user_info()
+
+def get_current_user_info():
+    current_user_id = session.get("id")
+    current_user = user.get_user_by_id(current_user_id).dict()
+    return jsonify(**current_user.dict()), 200
 
 def login():
     data = request.json

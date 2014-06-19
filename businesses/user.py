@@ -16,3 +16,6 @@ def add_new_user(user_data):
 
 def get_user_by_email(email):
     return session.query(User).filter_by(email=email).first()
+
+def get_user_by_id(id):
+    return session.query(User).filter_by(id=id).first()

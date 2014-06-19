@@ -21,7 +21,11 @@ class User(Base):
         self.__dict__.update(data)
 
     def dict(self):
-        attrs = ("username", "email", "id", "is_vip")
+        attrs = (
+            "username", 
+            "email", "id", 
+            "is_vip", 
+            "active_notebook_id")
         return {attr: getattr(self, attr) for attr in attrs}
 
     def __repr__(self):

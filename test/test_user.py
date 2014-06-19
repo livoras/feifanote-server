@@ -64,7 +64,7 @@ def test_login():
 
         with c.session_transaction() as s:
             s.clear()
-        rv = http(c, "post", "/user/me", dict(email="livoras@163.com", password="123456"))
+        rv = http(c, "post", "/users/me", dict(email="livoras@163.com", password="123456"))
         assert rv.status_code == 200
         result = json.loads(rv.data)
         assert_attrs = ("username", "email", "id", "is_vip")
@@ -75,14 +75,14 @@ def test_login():
 
         with c.session_transaction() as s:
             s.clear()
-        rv = http(c, "post", "/user/me", dict(email="livoras@me.com", password="123456"))
+        rv = http(c, "post", "/users/me", dict(email="livoras@me.com", password="123456"))
         assert rv.status_code == 404
         assert "User is not found." in rv.data
         assert sess.get("is_login") == None
 
         with c.session_transaction() as s:
             s.clear()
-        rv = http(c, "post", "/user/me", dict(email="livoras@163.com", password="126"))
+        rv = http(c, "post", "/users/me", dict(email="livoras@163.com", password="126"))
         assert rv.status_code == 401
         assert "Password is not correct." in rv.data
         assert sess.get("is_login") == None
@@ -91,13 +91,13 @@ def test_logout():
     with app.test_client() as c:
         with c.session_transaction() as s:
             s["is_login"] = True
-        rv = http(c, "delete", "/user/me")
+        rv = http(c, "delete", "/users/me")
         assert "OK." in rv.data
         assert rv.status_code == 200
         assert not sess.get('is_login')
 
         with c.session_transaction() as s:
             s.clear()
-        rv = http(c, "delete", "/user/me")
+        rv = http(c, "delete", "/users/me")
         assert "You have to login first." in rv.data
         assert rv.status_code == 401
