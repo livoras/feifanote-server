@@ -1,0 +1,51 @@
+div.header {
+  position: fixed;
+  top: 0;
+  @height: 40px;
+  height: @height;
+  width: 100%;
+  background-color: #fff;
+  line-height: @height;
+  font-size: 12px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.25);
+  div.logo {
+    width: 50px;
+    float: left;
+    margin-left: 30px;
+    a {
+      color: #34495e;
+      text-decoration: none;
+    }
+  }
+  div.actions {
+    width: 60%;
+    margin: 0 auto;
+    input {
+      margin: 0px 5px;
+      border-radius: 6px;
+      margin-top: 3px;
+      outline: none;
+      width: 30%;
+      padding: 0px 5px;
+      height: 23px;
+      background-color: #fff;
+      border: 1px solid #eee;
+      font-size: 12px;
+    }
+    div.right-actions {
+      width: 50%;
+      float: right;
+      color: #444;
+      div.action {
+        float: right;
+        padding: 0 15px;
+        margin-right: 2px;
+        // background-color: #555;
+        &:hover {
+          // background-color: #666;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

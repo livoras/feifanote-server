@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8"/>
+  <script src="lib/vue.min.js"></script>
+  <link rel="stylesheet" href="bin/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div v-view="currentView"></div>
+  </div>
+</body>
+
+<script src="//localhost:35729/livereload.js"></script>
+<script src="bin/js/common.js"></script>
+
+<!--components-->
+<script src="bin/js/components/feifanote.js"></script>
+<script src="bin/js/components/editor.js"></script>
+<script src="bin/js/components/footer.js"></script>
+<script src="bin/js/components/dashboard.js"></script>
+<script src="bin/js/components/header.js"></script>
+<script src="bin/js/components/entry.js"></script>
+<!--<script src="bin/js/components/{name}.js"></script>-->
+<!--components end-->
+
+<script>
+var initData = JSON.parse('{{init_data|safe}}')
+</script>
+<script src="/bin/js/main.js"></script>
+</html>
