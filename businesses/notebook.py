@@ -59,7 +59,10 @@ def modify_notebook_position(notebook_id, index):
     session.commit()    
 
 def get_all_notebooks_by_user_id(user_id):
-    return session.query(Notebook).filter_by(user_id=user_id).all()
+    return session.query(Notebook) \
+                  .filter_by(user_id=user_id) \
+                  .order_by(Notebook.index) \
+                  .all()
 
 def change_active_notebook(user_id, notebook_id):
     user = session.query(User).filter_by(id=user_id).first()

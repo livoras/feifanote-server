@@ -13,8 +13,6 @@ class Page(Base):
     content = sc.Column(sc.String)
     notebook_id = sc.Column(sc.Integer, sc.ForeignKey("notebooks.id"))
 
-    notebook = relationship("Notebook", backref=backref("pages"))
-
     def __init__(self, **data):
         self.__dict__.update(data)
 

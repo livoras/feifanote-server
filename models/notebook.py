@@ -15,6 +15,10 @@ class Notebook(Base):
     user_id = sc.Column(sc.Integer, sc.ForeignKey("users.id"))
 
     user = relationship("User", backref=backref("notebooks"))
+    pages = relationship("Page", \
+                                backref=backref("notebook"),
+                                order_by="Page.index", \
+                                cascade="all, delete, delete-orphan")
 
     def __init__(self, **data):
         self.__dict__.update(data)
