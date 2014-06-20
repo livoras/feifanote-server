@@ -187,6 +187,7 @@ def test_retrieve_specific_notebook():
         to_get = session.query(Notebook).filter_by(user_id=2).first()
         rv = http(c, "get", "/notebooks/%s" % to_get.id)    
         assert to_get.name in rv.data
+        assert "pages" in rv.data
         assert rv.status_code == 200
 
 def test_change_active_notebook():

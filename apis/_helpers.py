@@ -21,7 +21,7 @@ def require_login(route_fn):
 def notebook_ownership_check(route_fn):
     @wraps(route_fn)
     def _route_fn(*argvs, **keywords):
-        data = request.json
+        data = request.json or {}
         notebook_id = data.get("notebook_id")
         notebook_id = notebook_id or keywords.get("notebook_id")
         not_found = message("Notebook is not found.", 404)
@@ -43,7 +43,7 @@ def current_user_has_notebook(notebook_id):
 def page_ownership_check(route_fn):
     @wraps(route_fn)
     def _route_fn(*argvs, **keywords):
-        data = request.json
+        data = request.json or {}
         page_id = data.get("page_id")
         page_id = page_id or keywords.get("page_id")
         page = db.session.query(Page).filter_by(id=page_id).first()

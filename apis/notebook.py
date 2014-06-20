@@ -49,7 +49,9 @@ def check_notebook_data_valid(data):
 def notebooks_action(notebook_id):
     if request.method == "GET":
         to_get_notebook = notebook.find_notebook_by_id(notebook_id)
-        return jsonify(**to_get_notebook.dict()), 200
+        data = to_get_notebook.dict()
+        data["pages"] = [page.dict() for page in to_get_notebook.pages]
+        return jsonify(**data), 200
     elif request.method == "DELETE":
         user_id = session["id"]
         notebook.delete_notebook_by_id(notebook_id)
