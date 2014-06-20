@@ -7,6 +7,8 @@ from flask import Flask, request, \
                   session
 import config
 from common.db import init_db
+from common import db
+from models.user import User
 
 app = Flask(__name__, template_folder="feifanote")
 app.config.from_object(config)
@@ -22,12 +24,10 @@ def index():
 def get_init_data():
     if not session.get("is_login"):
         return json.dumps(dict(is_login=False))
-    attrs = (
-        "username", 
-        "email", "id", 
-        "is_vip", 
-        "active_notebook_id")
-    user = {attr: session.get(attr) for attr in attrs}
+    user = db.session.query(User) \
+                     .filter_by(id=session.get("id")) \
+                     .first() \
+                     .dict()
     return json.dumps(dict(is_login=True, user=user))
 
 @app.errorhandler(404)

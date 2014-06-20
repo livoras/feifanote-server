@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import logging
 from flask import Blueprint, jsonify, request, session
 from common.utils import message, encrypt
 from businesses import notebook

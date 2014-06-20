@@ -62,7 +62,7 @@
             * name has existed:
                 - 409 {message: "Name has already existed."}
             * ok:
-                - 201 {name, id, index}
+                - 201 {"id", "name", "index", "active_page_id", "user_id"}
        + DELETE /notebooks/<notebook_id>
         + none
         + results:
