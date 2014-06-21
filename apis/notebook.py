@@ -75,7 +75,7 @@ def modify_notebook_name(notebook_id, name):
     if len(name) == 0:
         return message("Name is not valid.", 400)
     to_modify_notebook = notebook.find_notebook_by_name_with_user_id(name, user_id)
-    if to_modify_notebook:
+    if to_modify_notebook and str(to_modify_notebook.id) != str(notebook_id):
         return message("Name has already existed.", 409)
     notebook.modify_notebook_name(notebook_id, name)
     return message("OK.", 200)
