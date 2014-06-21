@@ -34,7 +34,7 @@ def page_action(page_id):
 
 def modify_page(page_id):
     data = request.json
-    if data.get("content"):
+    if data.get("content") != None:
         content = data.get("content")
         page.modify_content_by_id(page_id, content)
         return message("OK.", 200)
