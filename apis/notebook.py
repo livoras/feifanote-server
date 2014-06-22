@@ -26,7 +26,9 @@ def create_new_notebook():
         return message("Name has already existed.", 409)
     data["user_id"] = user_id
     new_notebook = notebook.add_new_notebook(data)    
-    return jsonify(**new_notebook.dict()), 201
+    book_json = new_notebook.dict()
+    book_json["pages"] = [page.dict() for page in new_notebook.pages]
+    return jsonify(**book_json), 201
 
 def get_notebook_info():
     user_id = session.get("id")

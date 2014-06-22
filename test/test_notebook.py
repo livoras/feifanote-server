@@ -32,7 +32,10 @@ def test_create_a_notebook():
         assert rv.status_code == 201
         assert len(session.query(Notebook).filter(Notebook.user_id==2).all()) == 51
         assert len(session.query(Notebook).filter(Notebook.user_id==2, Notebook.index > 1).all()) == 50
-        assert session.query(Notebook).filter_by(user_id=2, index=1).first().name == "notebook_name2"
+        notebook = session.query(Notebook).filter_by(user_id=2, index=1).first()
+        assert notebook.name == "notebook_name2"
+        assert notebook.pages[0].index == 1
+        assert notebook.active_page_id == notebook.pages[0].id
         assert "name" in rv.data
 
     with app.test_client() as c:
@@ -106,7 +109,7 @@ def test_modify_notebook_name():
         with c.session_transaction() as s:
             s["is_login"] = True
             s["id"] = 2
-        to_modify_notebook = session.query(Notebook).filter_by(user_id=2).first()
+        to_modify_notebook = session.query(Notebook).filter_by(user_id=2).all()[2]
         notebook_id = to_modify_notebook.id
         rv = http(c, "patch", "/notebooks/%s?field=name" % notebook_id, dict(name="new_notebook_name"))
         assert rv.status_code == 409

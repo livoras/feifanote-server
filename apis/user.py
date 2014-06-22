@@ -17,8 +17,11 @@ def signup():
         return message("Email has already existed.", 409)
     if user.is_username_existed(data["username"]):
         return message("Username has already existed.", 409)
-    new_user = user.add_new_user(data)
-    return jsonify(new_user.dict()), 201
+    new_user, new_notebook = user.add_new_user(data)
+    user_json = new_user.dict()
+    user_json["notebooks"] = [new_notebook.dict()]
+    user_json["notebooks"][0]["pages"] = [new_notebook.pages[0].dict()]
+    return jsonify(**user_json), 201
 
 def check_user_data_validation(user_data):
     to_check_attrs = ("username", "email", "password")

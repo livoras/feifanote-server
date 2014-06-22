@@ -27,6 +27,12 @@ def test_signup():
         new_user = session.query(User).filter_by(id=result["id"]).first()
         assert new_user.password == utils.encrypt(user_data["password"])
         assert new_user.is_vip == False
+        assert new_user.notebooks[0].index == 1
+        assert new_user.active_notebook_id == new_user.notebooks[0].id
+        assert new_user.notebooks[0].pages[0].index == 1
+        assert new_user.notebooks[0].active_page_id == new_user.notebooks[0].pages[0].id
+        assert len(result["notebooks"]) == 1
+        assert len(result["notebooks"][0]["pages"]) == 1
 
         # Test for email conflicts
         user_data = dict(

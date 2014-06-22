@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from models.notebook import Notebook
 from models.user import User
+from models.page import Page
 from common.db import session
 from sys import maxint
 
@@ -13,8 +14,14 @@ def add_new_notebook(notebook_data):
     user_id, index = notebook_data["user_id"], notebook_data["index"]
     shift_notebooks(user_id, index, maxint)
     new_notebook = Notebook(**notebook_data)
+    new_page = Page(**dict(
+        notebook_id=new_notebook.id,
+        content="",
+        index=1))
+    new_notebook.pages = [new_page]
     session.add(new_notebook)
     session.commit()
+    new_notebook.active_page_id = new_page.id
     return new_notebook
 
 def delete_notebook_by_id(notebook_id):
