@@ -28,7 +28,7 @@ def check_user_data_validation(user_data):
     for attr in to_check_attrs:
         if not attr in user_data:
             return False, "%s is required" % attr
-    if not 0 < len(user_data["username"]) <= 30:
+    if not re.match("^[\w\d_]{1,31}$", user_data["username"]):
         return False, "Username is not valid."
     if not is_email_valid(user_data["email"]):
         return False, "Email is not valid."
