@@ -15,6 +15,8 @@ class User(Base):
     password = sc.Column(sc.String)
     is_vip = sc.Column(sc.Boolean, default=False)
     active_notebook_id = sc.Column(sc.Integer, default=-1)
+    notebooks_limitation = sc.Column(sc.Integer, default=10)
+    pages_limitation = sc.Column(sc.Integer, default=50)
 
     def __init__(self, **data):
         data["password"] = utils.encrypt(data["password"])
@@ -25,7 +27,9 @@ class User(Base):
             "username", 
             "email", "id", 
             "is_vip", 
-            "active_notebook_id")
+            "active_notebook_id",
+            "notebooks_limitation",
+            "pages_limitation")
         return {attr: getattr(self, attr) for attr in attrs}
 
     def __repr__(self):
