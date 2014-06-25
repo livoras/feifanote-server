@@ -68,3 +68,17 @@ def login():
 def logout():
     session.clear()
     return message("OK.", 200)
+
+@api.route("/users/check_email_availability/<email>")
+def check_email_availability(email):
+    if user.get_user_by_email(email):
+        return message("Email has been used.", 409)
+    else:
+        return message("OK.", 200)
+
+@api.route("/users/check_username_availability/<username>")
+def check_username_availability(username):
+    if user.get_user_by_name(username):
+        return message("Username has been used.", 409)
+    else:
+        return message("OK.", 200)

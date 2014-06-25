@@ -37,7 +37,7 @@ def test_signup():
         # Test for email conflicts
         user_data = dict(
             email="jerry@163.com",
-            username="not-jerry",
+            username="notJerry",
             password="123456")
         rv = http(c, "post", "/users", user_data)
         assert rv.status_code == 409
@@ -107,3 +107,36 @@ def test_logout():
         rv = http(c, "delete", "/users/me")
         assert "You have to login first." in rv.data
         assert rv.status_code == 401
+
+def test_email_is_available():
+    with app.test_client() as c:
+        rv = http(c, "get", "/users/check_email_availability/livoras@163.com")
+        assert rv.status_code == 409
+        assert "Email has been used." in rv.data
+
+    with app.test_client() as c:
+        rv = http(c, "get", "/users/check_email_availability/fuckyou@163.com")
+        assert rv.status_code == 200
+        assert "OK." in rv.data
+
+def test_email_is_available():
+    with app.test_client() as c:
+        rv = http(c, "get", "/users/check_email_availability/livoras@163.com")
+        assert rv.status_code == 409
+        assert "Email has been used." in rv.data
+
+    with app.test_client() as c:
+        rv = http(c, "get", "/users/check_email_availability/fuckyou@163.com")
+        assert rv.status_code == 200
+        assert "OK." in rv.data
+
+def test_username_is_available():
+    with app.test_client() as c:
+        rv = http(c, "get", "/users/check_username_availability/livoras")
+        assert rv.status_code == 409
+        assert "Username has been used." in rv.data
+
+    with app.test_client() as c:
+        rv = http(c, "get", "/users/check_username_availability/fuckyoulucy")
+        assert rv.status_code == 200
+        assert "OK." in rv.data
