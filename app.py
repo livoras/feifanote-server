@@ -15,6 +15,7 @@ app.config.from_object(config)
 
 @app.route('/')
 def index():
+    session.permanent = True
     init_data = get_init_data()
     if config.DEBUG:
         return render_template("index.html", init_data=init_data)
